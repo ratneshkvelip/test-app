@@ -12,13 +12,13 @@ const LandingPage=()=>{
         setProfiles([
             {
                 profileId:"abc",
-                profileName:"Ratnesh",
+                profileName:"Mufasa",
                 prifileAvatar:"./mufasa.png"
             },
             {
                 profileId:"xyz",
-                profileName:"Guest",
-                prifileAvatar:"./mufasa.png"
+                profileName:"Groot",
+                prifileAvatar:"./groot.png"
             }
         ])
     },[])

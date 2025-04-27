@@ -7,7 +7,7 @@ const Test =()=>{
     return(
         <div>Test
 
-            <button onClick={()=>{navigate('/')}}>Back</button>
+            <button onClick={()=>{navigate('/home')}}>Back</button>
         </div>
     )
 }
