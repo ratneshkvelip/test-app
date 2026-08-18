@@ -1,0 +1,42 @@
+postman request POST 'http://localhost:8000/ai/generatehtml' \
+  --header 'Content-Type: application/json' \
+  --body '{
+  "kpis": {
+    "revenue": {
+      "value": 1250000,
+      "currency": "USD",
+      "change": 12.4
+    },
+    "customers": {
+      "value": 18420,
+      "change": 8.2
+    },
+    "orders": {
+      "value": 3250,
+      "change": -2.1
+    },
+    "conversion_rate": {
+      "value": 4.8,
+      "unit": "%",
+      "change": 0.6
+    },
+    "revenue_trend": [
+      {
+        "month": "May",
+        "value": 980000
+      },
+      {
+        "month": "June",
+        "value": 1020000
+      },
+      {
+        "month": "July",
+        "value": 1100000
+      },
+      {
+        "month": "August",
+        "value": 1250000
+      }
+    ]
+  }
+}'

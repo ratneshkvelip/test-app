@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive KPI Dashboard</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --border-color-hover: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent-primary: #2563eb;
+            --accent-soft: #dbeafe;
+            --accent-bg: #eff6ff;
+            --success: #16a34a;
+            --success-bg: #f0fdf4;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 6px;
+
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            -webkit-font-smoothing: antialiased;
+
+        }
+
+
+
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+
+        }
+
+        .header-title-group h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+
+        }
+
+        .header-title-group p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+        }
+
+        .period-badge {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-sm);
+
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--success);
+
+        }
+
+
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-color-hover);
+
+        }
+
+        .kpi-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+
+        }
+
+        .kpi-icon-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background-color: var(--accent-bg);
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .kpi-icon-wrapper svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 12px;
+
+        }
+
+        .kpi-bottom {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+
+        }
+
+        .kpi-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 12px;
+
+        }
+
+        .kpi-badge.positive {
+            background-color: var(--success-bg);
+            color: var(--success);
+
+        }
+
+        .kpi-badge.negative {
+            background-color: var(--danger-bg);
+            color: var(--danger);
+
+        }
+
+        .kpi-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke-width: 2.5;
+
+        }
+
+        .kpi-comparison {
+            color: var(--text-muted);
+
+        }
+
+
+
+        /* Main Section */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+
+            }
+
+
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            box-shadow: var(--shadow-sm);
+
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+
+        }
+
+        .card-title-group h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+
+        }
+
+        .card-title-group p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+
+        }
+
+
+
+        /* Chart Component */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease, transform 0.15s ease;
+            box-shadow: var(--shadow-md);
+            transform: translate(-50%, -100%);
+            margin-top: -10px;
+            white-space: nowrap;
+            z-index: 20;
+
+        }
+
+        .chart-tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 4px 4px 0;
+            border-style: solid;
+            border-color: #0f172a transparent;
+            display: block;
+            width: 0;
+
+        }
+
+
+
+        /* Insights Box */
+        .insights-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+
+        }
+
+        .insight-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: var(--accent-soft);
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+
+        }
+
+        .insight-icon svg {
+            width: 14px;
+            height: 14px;
+
+        }
+
+        .insight-content {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.4;
+
+        }
+
+        .insight-content strong {
+            font-weight: 600;
+            color: var(--text-primary);
+
+        }
+
+
+
+        /* Supporting Data Table Section */
+        .table-container {
+            overflow-x: auto;
+
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+
+        }
+
+        th {
+            background-color: var(--bg-main);
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+
+        }
+
+        tr:hover td {
+            background-color: #f1f5f9;
+
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+        }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 6px;
+            background-color: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            max-width: 140px;
+
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: var(--accent-primary);
+            border-radius: 3px;
+
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+
+        }
+
+        .tag.highlight {
+            background-color: var(--accent-bg);
+            color: var(--accent-primary);
+
+        }
+    </style>
+</head>
+
+<body> <!-- Header -->
+    <header class="dashboard-header">
+        <div class="header-title-group">
+            <h1>Executive
+                Performance Dashboard</h1>
+            <p>Performance summary and trend analysis</p>
+        </div>
+        <div class="header-meta">
+            <div class="period-badge"> <span class="status-dot"></span> Reporting
+                Period: May – August </div>
+        </div>
+    </header> <!-- KPI Grid -->
+    <section class="kpi-grid">
+        <!-- Revenue -->
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-top"> <span class="kpi-label">Total Revenue</span>
+                    <div class="kpi-icon-wrapper"> <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343
+                                2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11
+                                0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg> </div>
+                </div>
+                <div class="kpi-value" id="kpi-revenue">$1,250,000</div>
+            </div>
+            <div class="kpi-bottom"> <span class="kpi-badge positive"> <svg xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                    </svg> +12.4% </span> <span class="kpi-comparison">vs previous period</span> </div>
+        </div> <!-- Active Customers -->
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-top"> <span class="kpi-label">Active Customers</span>
+                    <div class="kpi-icon-wrapper"> <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0
+                                00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0
+                                015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0
+                                11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg> </div>
+                </div>
+                <div class="kpi-value" id="kpi-customers">18,420</div>
+            </div>
+            <div class="kpi-bottom"> <span class="kpi-badge positive"> <svg xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                    </svg> +8.2% </span> <span class="kpi-comparison">vs previous period</span> </div>
+        </div> <!-- Total Orders -->
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-top"> <span class="kpi-label">Total Orders</span>
+                    <div class="kpi-icon-wrapper"> <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5
+                                9h14l1 12H4L5 9z" />
+                        </svg> </div>
+                </div>
+                <div class="kpi-value" id="kpi-orders">3,250</div>
+            </div>
+            <div class="kpi-bottom"> <span class="kpi-badge negative"> <svg xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg> -2.1% </span> <span class="kpi-comparison">vs previous period</span> </div>
+        </div> <!-- Conversion Rate -->
+        <div class="kpi-card">
+            <div>
+                <div class="kpi-top"> <span class="kpi-label">Conversion Rate</span>
+                    <div class="kpi-icon-wrapper"> <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6
+                                6" />
+                        </svg> </div>
+                </div>
+                <div class="kpi-value" id="kpi-conversion">4.8%</div>
+            </div>
+            <div class="kpi-bottom"> <span class="kpi-badge positive"> <svg xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                    </svg> +0.6% </span> <span class="kpi-comparison">vs previous period</span> </div>
+        </div>
+    </section> <!-- Main Section: Chart & Insights -->
+    <section class="dashboard-layout">
+        <!-- Chart Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <h2>Revenue Trend Analysis</h2>
+                    <p>Monthly revenue trajectory from May to August (USD)</p>
+                </div>
+            </div>
+            <div class="chart-container" id="chart-container">
+                <div class="chart-tooltip" id="chart-tooltip"></div> <svg class="chart-svg" id="revenue-chart"></svg>
+            </div>
+        </div>
+        <!-- Insights Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title-group">
+                    <h2>Executive Summary</h2>
+                    <p>Key observations from current KPI data
+                    </p>
+                </div>
+            </div>
+            <div class="insights-list">
+                <div class="insight-item">
+                    <div class="insight-icon"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0
+                            24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6
+                                6" />
+                        </svg> </div>
+                    <div class="insight-content"> <strong>Continuous Growth:</strong> Revenue
+                        increased every month from $980,000 in May to $1,250,000 in August, representing a total 4-month
+                        growth of $270,000 (+27.55%). </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0
+                            24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15
+                                21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg> </div>
+                    <div class="insight-content"> <strong>Customer Expansion:</strong>
+                        Customer count grew by 8.2% to 18,420, coinciding with a 0.6% gain in conversion rate to 4.8%.
+                    </div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon"> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938
+                                4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77
+                                1.333.192 3 1.732 3z" />
+                        </svg> </div>
+                    <div class="insight-content"> <strong>Order Volume Variance:</strong>
+                        Total orders decreased by 2.1% to 3,250 despite overall revenue growth. </div>
+                </div>
+            </div>
+        </div>
+    </section> <!-- Supporting Data Table Card -->
+    <section class="card">
+        <div class="card-header">
+            <div class="card-title-group">
+                <h2>Monthly Revenue Breakdown</h2>
+                <p>Detailed
+                    month-over-month performance figures</p>
+            </div>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Revenue (USD)</th>
+                        <th>MoM Growth</th>
+                        <th>Share of Peak
+                            (August)</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <script>
+        const rawData = { revenue: { value: 1250000, currency: "USD", change: 12.4 }, customers: { value: 18420, change: 8.2 }, orders: { value: 3250, change: -2.1 }, conversion_rate: { value: 4.8, unit: "%", change: 0.6 }, revenue_trend: [{ month: "May", value: 980000 }, { month: "June", value: 1020000 }, { month: "July", value: 1100000 }, { month: "August", value: 1250000 }] };      const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);    const formatNumber = (val) => new Intl.NumberFormat('en-US').format(val);      function renderTable() {      const tbody = document.getElementById('table-body');      tbody.innerHTML = '';      const maxVal = Math.max(...rawData.revenue_trend.map(d => d.value));      rawData.revenue_trend.forEach((item, index) => {        const tr = document.createElement('tr');                let momGrowthStr = 'N/A';        if (index > 0) {          const prev = rawData.revenue_trend[index - 1].value;          const pct = ((item.value - prev) / prev) * 100;          momGrowthStr = `+${pct.toFixed(2)}%`;        }        const sharePct = ((item.value / maxVal) * 100).toFixed(1);        tr.innerHTML = `          <td><strong>${item.month}</strong></td>          <td>${formatCurrency(item.value)}</td>          <td><span class="${index > 0 ? 'tag highlight' : 'tag'}">${momGrowthStr}</span></td>          <td>            <div class="progress-bar-container">              <div class="progress-bar-bg">                <div class="progress-bar-fill" style="width: ${sharePct}%"></div>              </div>              <span style="font-size: 12px; color: var(--text-secondary); width: 45px;">${sharePct}%</span>            </div>          </td>        `;        tbody.appendChild(tr);      });    }       function renderChart() {      const svg = document.getElementById('revenue-chart');      const tooltip = document.getElementById('chart-tooltip');      const container = document.getElementById('chart-container');            const width = container.clientWidth;      const height = container.clientHeight;            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);      svg.innerHTML = '';      const paddingLeft = 70;      const paddingRight = 30;      const paddingTop = 20;      const paddingBottom = 40;      const chartWidth = width - paddingLeft - paddingRight;      const chartHeight = height - paddingTop - paddingBottom;      const data = rawData.revenue_trend;               const minY = 0;      const maxY = 1400000;           const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');      defs.innerHTML = `        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">          <stop offset="0%" stop-color="#2563eb" stop-opacity="0.25"/>          <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0"/>        </linearGradient>      `;      svg.appendChild(defs);     const yTicks = [0, 350000, 700000, 1050000, 1400000];      yTicks.forEach(tick => {        const yPos = paddingTop + chartHeight - ((tick - minY) / (maxY - minY)) * chartHeight;                     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');        line.setAttribute('x1', paddingLeft);        line.setAttribute('y1', yPos);        line.setAttribute('x2', width - paddingRight);        line.setAttribute('y2', yPos);        line.setAttribute('stroke', '#e2e8f0');        line.setAttribute('stroke-dasharray', '4 4');        svg.appendChild(line);            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');        text.setAttribute('x', paddingLeft - 10);        text.setAttribute('y', yPos + 4);        text.setAttribute('text-anchor', 'end');        text.setAttribute('font-size', '11');        text.setAttribute('fill', '#64748b');        text.textContent = `$${(tick / 1000).toFixed(0)}k`;        svg.appendChild(text);      });           const points = data.map((d, i) => {        const x = paddingLeft + (i / (data.length - 1)) * chartWidth;        const y = paddingTop + chartHeight - ((d.value - minY) / (maxY - minY)) * chartHeight;        return { x, y, data: d };      });           let areaD = `M ${points[0].x} ${paddingTop + chartHeight}`;      points.forEach(p => {        areaD += ` L ${p.x} ${p.y}`;      });      areaD += ` L ${points[points.length - 1].x} ${paddingTop + chartHeight} Z`;      const area = document.createElementNS('http://www.w3.org/2000/svg', 'path');      area.setAttribute('d', areaD);      area.setAttribute('fill', 'url(#chartGradient)');      svg.appendChild(area);          let lineD = '';      points.forEach((p, i) => {        if (i === 0) lineD += `M ${p.x} ${p.y}`;        else lineD += ` L ${p.x} ${p.y}`;      });      const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');      line.setAttribute('d', lineD);      line.setAttribute('fill', 'none');      line.setAttribute('stroke', '#2563eb');      line.setAttribute('stroke-width', '3');      line.setAttribute('stroke-linecap', 'round');      line.setAttribute('stroke-linejoin', 'round');      svg.appendChild(line);          points.forEach((p) => {            const xText = document.createElementNS('http://www.w3.org/2000/svg', 'text');        xText.setAttribute('x', p.x);        xText.setAttribute('y', height - 12);        xText.setAttribute('text-anchor', 'middle');        xText.setAttribute('font-size', '12');        xText.setAttribute('font-weight', '500');        xText.setAttribute('fill', '#475569');        xText.textContent = p.data.month;        svg.appendChild(xText);              const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');        circle.setAttribute('cx', p.x);        circle.setAttribute('cy', p.y);        circle.setAttribute('r', '6');        circle.setAttribute('fill', '#ffffff');        circle.setAttribute('stroke', '#2563eb');        circle.setAttribute('stroke-width', '3');        circle.style.cursor = 'pointer';        circle.style.transition = 'all 0.15s ease';              circle.addEventListener('mouseenter', () => {          circle.setAttribute('r', '8');          circle.setAttribute('stroke-width', '4');          tooltip.style.opacity = '1';          tooltip.style.left = `${p.x}px`;          tooltip.style.top = `${p.y}px`;          tooltip.innerHTML = `<strong>${p.data.month}</strong>: ${formatCurrency(p.data.value)}`;        });        circle.addEventListener('mouseleave', () => {          circle.setAttribute('r', '6');          circle.setAttribute('stroke-width', '3');          tooltip.style.opacity = '0';        });        svg.appendChild(circle);      });    }       window.addEventListener('DOMContentLoaded', () => {      renderTable();      renderChart();    });    window.addEventListener('resize', () => {      renderChart();    });  </script>
+
+
+</body>
+
+</html>
